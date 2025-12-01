@@ -698,6 +698,310 @@
                                 </div>
                                 <div class="role-description">
                                     <p>农民是游戏中的团队角色，需要与另一位农民密切合作，共同对抗地主。虽然农民的牌数较少且后出牌，但通过良好的团队配合和策略，可以有效地限制地主的出牌。</p>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#D92121',
+                        secondary: '#FFB800',
+                        gold: '#FFD700',
+                        peasant: '#2E7D32',
+                        landlord: '#C62828',
+                        wood: '#8D6E63',
+                    },
+                    fontFamily: {
+                        game: ['Ma Shan Zheng', 'cursive', 'system-ui'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .wood-bg {
+                background-image: url('https://picsum.photos/id/106/1000/1000');
+                background-size: cover;
+                background-position: center;
+                background-blend-mode: overlay;
+            }
+            .text-shadow {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            }
+            .card-hover {
+                @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- 顶部导航栏 -->
+    <header class="bg-primary text-white shadow-lg">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <i class="fa fa-trophy text-gold text-3xl"></i>
+                    <h1 class="text-2xl font-game font-bold">欢乐斗地主</h1>
+                </div>
+                
+                <!-- 用户快捷信息 -->
+                <div class="flex items-center gap-6">
+                    <button class="bg-secondary hover:bg-opacity-90 text-white px-4 py-2 rounded-lg transition-all">
+                        <i class="fa fa-gift mr-2"></i>领取奖励
+                    </button>
+                    <div class="flex items-center gap-2">
+                        <img src="https://picsum.photos/id/64/40/40" alt="头像" class="w-10 h-10 rounded-full border-2 border-gold">
+                        <span class="font-semibold">逍遥侠客</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <!-- 服务器状态区 -->
+        <section class="mb-8">
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                            <i class="fa fa-server text-primary"></i>
+                            服务器状态
+                        </h2>
+                        <p class="text-gray-500 text-sm">当前时间：2025-12-01 14:30:00</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-green-500 animate-pulse"></span>
+                            <span class="text-green-600 font-semibold">服务器正常</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-gray-50 rounded-xl p-4 card-hover">
+                        <div class="text-3xl font-bold text-primary text-center">8,452</div>
+                        <div class="text-gray-600 text-sm text-center mt-2">当前在线玩家</div>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-4 card-hover">
+                        <div class="text-3xl font-bold text-secondary text-center">1,258</div>
+                        <div class="text-gray-600 text-sm text-center mt-2">游戏房间总数</div>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-4 card-hover">
+                        <div class="text-3xl font-bold text-peasant text-center">3,642</div>
+                        <div class="text-gray-600 text-sm text-center mt-2">正在游戏中</div>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h3 class="text-sm font-semibold text-gray-700 mb-3">房间人数分布</h3>
+                    <div class="h-64">
+                        <canvas id="roomChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 主体内容区域 -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- 左侧区域：游戏介绍和角色信息 -->
+            <div class="lg:col-span-2 space-y-8">
+                <!-- 游戏介绍区域 -->
+                <section class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <div class="wood-bg bg-primary bg-opacity-90 text-white p-6">
+                        <h2 class="text-2xl font-game font-bold mb-2">游戏介绍</h2>
+                        <p class="opacity-90">经典国民棋牌游戏，欢乐竞技等你来战</p>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="mb-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">背景故事</h3>
+                            <p class="text-gray-600 leading-relaxed">
+                                斗地主起源于湖北武汉汉阳一带，是一款极具中国特色的扑克游戏。相传在旧社会，地主横行乡里，欺压百姓，人们为了发泄对地主的痛恨，常常在一天的劳作之后，一家人关起门来斗地主。如今已成为风靡全国的经典棋牌游戏，深受广大玩家喜爱。
+                            </p>
+                        </div>
+
+                        <div class="mb-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">核心玩法</h3>
+                            <p class="text-gray-600 leading-relaxed mb-4">
+                                游戏由3名玩家进行，一副牌54张，一人17张，留3张底牌。玩家通过叫分成为地主，获得底牌与另外两位农民玩家对抗。目标是将手中的牌尽快出完，地主先出完则地主获胜，任一农民先出完则农民方获胜。
+                            </p>
+                        </div>
+
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">游戏特色</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                <div class="bg-gray-50 rounded-xl p-4 card-hover">
+                                    <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mb-3">
+                                        <i class="fa fa-bolt text-primary text-xl"></i>
+                                    </div>
+                                    <h4 class="font-semibold mb-1">极速匹配</h4>
+                                    <p class="text-sm text-gray-600">一键快速开始游戏</p>
+                                </div>
+                                <div class="bg-gray-50 rounded-xl p-4 card-hover">
+                                    <div class="w-12 h-12 bg-secondary bg-opacity-10 rounded-full flex items-center justify-center mb-3">
+                                        <i class="fa fa-trophy text-secondary text-xl"></i>
+                                    </div>
+                                    <h4 class="font-semibold mb-1">排位竞技</h4>
+                                    <p class="text-sm text-gray-600">公平竞技天梯排行</p>
+                                </div>
+                                <div class="bg-gray-50 rounded-xl p-4 card-hover">
+                                    <div class="w-12 h-12 bg-peasant bg-opacity-10 rounded-full flex items-center justify-center mb-3">
+                                        <i class="fa fa-users text-peasant text-xl"></i>
+                                    </div>
+                                    <h4 class="font-semibold mb-1">好友开黑</h4>
+                                    <p class="text-sm text-gray-600">创建房间好友对战</p>
+                                </div>
+                                <div class="bg-gray-50 rounded-xl p-4 card-hover">
+                                    <div class="w-12 h-12 bg-purple-500 bg-opacity-10 rounded-full flex items-center justify-center mb-3">
+                                        <i class="fa fa-gift text-purple-500 text-xl"></i>
+                                    </div>
+                                    <h4 class="font-semibold mb-1">丰富奖励</h4>
+                                    <p class="text-sm text-gray-600">每日登录领取好礼</p>
+                                </div>
+                                <div class="bg-gray-50 rounded-xl p-4 card-hover">
+                                    <div class="w-12 h-12 bg-blue-500 bg-opacity-10 rounded-full flex items-center justify-center mb-3">
+                                        <i class="fa fa-line-chart text-blue-500 text-xl"></i>
+                                    </div>
+                                    <h4 class="font-semibold mb-1">数据分析</h4>
+                                    <p class="text-sm text-gray-600">详细战绩统计分析</p>
+                                </div>
+                                <div class="bg-gray-50 rounded-xl p-4 card-hover">
+                                    <div class="w-12 h-12 bg-yellow-500 bg-opacity-10 rounded-full flex items-center justify-center mb-3">
+                                        <i class="fa fa-shield text-yellow-500 text-xl"></i>
+                                    </div>
+                                    <h4 class="font-semibold mb-1">公平公正</h4>
+                                    <p class="text-sm text-gray-600">防作弊安全保障</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 角色信息区 -->
+                <section class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <div class="bg-primary text-white p-6">
+                        <h2 class="text-2xl font-game font-bold mb-2">游戏角色</h2>
+                        <p class="opacity-90">选择你的阵营，开启精彩对战</p>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- 地主角色 -->
+                            <div class="bg-landlord bg-opacity-5 rounded-2xl p-6 border-2 border-landlord card-hover">
+                                <div class="flex items-start gap-4">
+                                    <img src="https://picsum.photos/id/1005/120/120" alt="地主" class="w-24 h-24 rounded-xl shadow-md">
+                                    <div>
+                                        <h3 class="text-xl font-bold text-landlord mb-2">地主</h3>
+                                        <p class="text-gray-600 mb-3">掌控全局的统治者</p>
+                                        <div class="space-y-2">
+                                            <div class="flex items-center gap-2">
+                                                <i class="fa fa-plus-circle text-landlord"></i>
+                                                <span class="text-sm">获得3张底牌优势</span>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <i class="fa fa-plus-circle text-landlord"></i>
+                                                <span class="text-sm">先出牌主动权</span>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <i class="fa fa-minus-circle text-red-500"></i>
+                                                <span class="text-sm">1V2 一对二挑战</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <h4 class="font-semibold text-gray-700 mb-2">属性特点</h4>
+                                    <div class="space-y-2">
+                                        <div>
+                                            <div class="flex justify-between text-sm mb-1">
+                                                <span>获胜收益</span>
+                                                <span class="text-landlord font-semibold">+200%</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                                <div class="bg-landlord h-2 rounded-full" style="width: 80%"></div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="flex justify-between text-sm mb-1">
+                                                <span>游戏难度</span>
+                                                <span class="text-landlord font-semibold">困难</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                                <div class="bg-landlord h-2 rounded-full" style="width: 75%"></div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="flex justify-between text-sm mb-1">
+                                                <span>胜率期望</span>
+                                                <span class="text-landlord font-semibold">45%</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                                <div class="bg-landlord h-2 rounded-full" style="width: 45%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 农民角色 -->
+                            <div class="bg-peasant bg-opacity-5 rounded-2xl p-6 border-2 border-peasant card-hover">
+                                <div class="flex items-start gap-4">
+                                    <img src="https://picsum.photos/id/1000/120/120" alt="农民" class="w-24 h-24 rounded-xl shadow-md">
+                                    <div>
+                                        <h3 class="text-xl font-bold text-peasant mb-2">农民</h3>
+                                        <p class="text-gray-600 mb-3">团结协作的反抗者</p>
+                                        <div class="space-y-2">
+                                            <div class="flex items-center gap-2">
+                                                <i class="fa fa-plus-circle text-peasant"></i>
+                                                <span class="text-sm">2V1 团队协作优势</span>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <i class="fa fa-plus-circle text-peasant"></i>
+                                                <span class="text-sm">共享对手出牌信息</span>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <i class="fa fa-minus-circle text-red-500"></i>
+                                                <span class="text-sm">后出牌被动应战</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <h4 class="font-semibold text-gray-700 mb-2">属性特点</h4>
+                                    <div class="space-y-2">
+                                        <div>
+                                            <div class="flex justify-between text-sm mb-1">
+                                                <span>获胜收益</span>
+                                                <span class="text-peasant font-semibold">+100%</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                                <div class="bg-peasant h-2 rounded-full" style="width: 50%"></div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="flex justify-between text-sm mb-1">
+                                                <span>游戏难度</span>
+                                                <span class="text-peasant font-semibold">简单</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                                <div class="bg-peasant h-2 rounded-full" style="width: 30%"></div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="flex justify-between text-sm mb-1">
+                                                <span>胜率期望</span>
+                                                <span class="text-peasant font-semibold">55%</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                                <div class="bg-peasant h-2 rounded-full" style="width: 55%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1056,6 +1360,334 @@
 
         // 每5秒更新一次服务器状态
         setInterval(updateServerStatus, 5000);
+                </section>
+
+                <!-- 规则指引模块 -->
+                <section class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <div class="bg-primary text-white p-6">
+                        <h2 class="text-2xl font-game font-bold mb-2">游戏规则</h2>
+                        <p class="opacity-90">快速上手，掌握制胜技巧</p>
+                    </div>
+                    
+                    <div class="p-6">
+                        <!-- 标签页切换 -->
+                        <div class="border-b border-gray-200 mb-6">
+                            <div class="flex space-x-8">
+                                <button class="rule-tab active py-2 px-1 border-b-2 border-primary text-primary font-semibold" data-tab="basic">基本规则</button>
+                                <button class="rule-tab py-2 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-tab="win">胜负判定</button>
+                                <button class="rule-tab py-2 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-tab="skill">进阶技巧</button>
+                            </div>
+                        </div>
+
+                        <!-- 基本规则 -->
+                        <div class="rule-content active" id="basic-tab">
+                            <div class="space-y-4">
+                                <div class="flex gap-4">
+                                    <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <span class="text-primary font-bold text-lg">1</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800 mb-1">发牌叫地主</h4>
+                                        <p class="text-gray-600">一副牌54张，一人17张，留3张底牌。玩家依次叫分，可选择叫1分、2分、3分或不叫，最终叫分最高的成为地主并获得3张底牌。</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <span class="text-primary font-bold text-lg">2</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800 mb-1">出牌规则</h4>
+                                        <p class="text-gray-600">地主先出牌，玩家轮流出牌，后一家打出的牌必须比上家打出的牌大。可以选择不出，当其他玩家都不出时，最后出牌的玩家继续出牌。</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <span class="text-primary font-bold text-lg">3</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800 mb-1">牌型大小</h4>
+                                        <p class="text-gray-600">火箭最大，可以打任意牌型；炸弹仅次于火箭，可打除火箭外任意牌型。其他牌型只有相同牌型可以比较大小，点数从大到小依次为：大王、小王、2、A、K、Q、J、10、9、8、7、6、5、4、3。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 胜负判定 -->
+                        <div class="rule-content hidden" id="win-tab">
+                            <div class="space-y-4">
+                                <div class="bg-green-50 border border-green-200 rounded-xl p-4">
+                                    <h4 class="font-semibold text-green-800 mb-2 flex items-center gap-2">
+                                        <i class="fa fa-check-circle"></i>
+                                        地主获胜
+                                    </h4>
+                                    <p class="text-gray-600">地主首先出完所有牌则地主获胜，地主获得双倍游戏奖励，两位农民玩家扣除相应积分。</p>
+                                </div>
+                                <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                                    <h4 class="font-semibold text-blue-800 mb-2 flex items-center gap-2">
+                                        <i class="fa fa-check-circle"></i>
+                                        农民获胜
+                                    </h4>
+                                    <p class="text-gray-600">任意一位农民玩家首先出完所有牌则农民方获胜，两位农民玩家平分游戏奖励，地主玩家扣除双倍积分。</p>
+                                </div>
+                                <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+                                    <h4 class="font-semibold text-yellow-800 mb-2 flex items-center gap-2">
+                                        <i class="fa fa-info-circle"></i>
+                                        特殊情况
+                                    </h4>
+                                    <p class="text-gray-600">游戏中途玩家逃跑则判负，若地主逃跑则农民方获胜，若农民逃跑则地主获胜，逃跑玩家额外扣除逃跑惩罚积分。</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 进阶技巧 -->
+                        <div class="rule-content hidden" id="skill-tab">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="bg-gray-50 rounded-xl p-4 card-hover">
+                                    <h4 class="font-semibold text-gray-800 mb-2">记牌技巧</h4>
+                                    <p class="text-sm text-gray-600 mb-3">通过记忆已打出的牌型和点数，推断对手手中剩余的牌，尤其要记住大小王、2和A等关键牌的打出情况。</p>
+                                    <div class="flex items-center text-primary text-sm">
+                                        <i class="fa fa-lightbulb-o mr-2"></i>
+                                        <span>Tip: 使用扑克牌面值对应法帮助记忆</span>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-50 rounded-xl p-4 card-hover">
+                                    <h4 class="font-semibold text-gray-800 mb-2">出牌策略</h4>
+                                    <p class="text-sm text-gray-600 mb-3">地主需要快速清牌，农民则需要配合队友，通过拆牌、顶牌等方式压制地主，尽量让队友走牌。</p>
+                                    <div class="flex items-center text-primary text-sm">
+                                        <i class="fa fa-lightbulb-o mr-2"></i>
+                                        <span>Tip: 保留灵活牌型，不要过早暴露实力</span>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-50 rounded-xl p-4 card-hover">
+                                    <h4 class="font-semibold text-gray-800 mb-2">叫牌技巧</h4>
+                                    <p class="text-sm text-gray-600 mb-3">根据手牌质量决定是否叫地主，拥有炸弹、王炸、多个2时可以尝试叫分，否则应谨慎叫牌。</p>
+                                    <div class="flex items-center text-primary text-sm">
+                                        <i class="fa fa-lightbulb-o mr-2"></i>
+                                        <span>Tip: 避免冲动叫高倍，理性评估手牌实力</span>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-50 rounded-xl p-4 card-hover">
+                                    <h4 class="font-semibold text-gray-800 mb-2">心理战术</h4>
+                                    <p class="text-sm text-gray-600 mb-3">通过出牌节奏和犹豫时间迷惑对手，隐藏自己的真实实力，诱导对手做出错误判断。</p>
+                                    <div class="flex items-center text-primary text-sm">
+                                        <i class="fa fa-lightbulb-o mr-2"></i>
+                                        <span>Tip: 保持平常心，避免被对手带节奏</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- 右侧区域：用户信息面板 -->
+            <div class="space-y-8">
+                <section class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <div class="bg-primary text-white p-6">
+                        <h2 class="text-xl font-game font-bold mb-2">个人信息</h2>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="flex flex-col items-center mb-6">
+                            <img src="https://picsum.photos/id/64/100/100" alt="头像" class="w-24 h-24 rounded-full border-4 border-gold shadow-lg mb-3">
+                            <h3 class="text-xl font-bold text-gray-800">逍遥侠客</h3>
+                            <p class="text-gray-500">Lv.18 斗帝强者</p>
+                        </div>
+
+                        <!-- 等级进度条 -->
+                        <div class="mb-6">
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm font-semibold text-gray-700">等级进度</span>
+                                <span class="text-sm text-primary font-semibold">18,450 / 30,000</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                <div class="bg-gradient-to-r from-primary to-secondary h-3 rounded-full" style="width: 61.5%"></div>
+                            </div>
+                            <div class="flex justify-between mt-1">
+                                <span class="text-xs text-gray-500">Lv.18</span>
+                                <span class="text-xs text-gray-500">Lv.19</span>
+                            </div>
+                        </div>
+
+                        <!-- 统计数据 -->
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                <span class="text-gray-600">累计在线时长</span>
+                                <span class="font-semibold text-gray-800">1,258 小时</span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                <span class="text-gray-600">总对局数</span>
+                                <span class="font-semibold text-gray-800">8,456 局</span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                <span class="text-gray-600">胜率</span>
+                                <span class="font-semibold text-green-600">58.2%</span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                <span class="text-gray-600">连胜场次</span>
+                                <span class="font-semibold text-secondary">8 场</span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                <span class="text-gray-600">拥有金币</span>
+                                <span class="font-semibold text-gold">258,450</span>
+                            </div>
+                        </div>
+
+                        <!-- 快捷操作 -->
+                        <div class="mt-6 grid grid-cols-2 gap-3">
+                            <button class="bg-primary hover:bg-primary/90 text-white py-3 rounded-xl transition-all flex items-center justify-center gap-2">
+                                <i class="fa fa-play"></i>
+                                <span>开始游戏</span>
+                            </button>
+                            <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-xl transition-all flex items-center justify-center gap-2">
+                                <i class="fa fa-user-plus"></i>
+                                <span>邀请好友</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 任务面板 -->
+                <section class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <div class="bg-secondary text-white p-6">
+                        <h2 class="text-xl font-semibold mb-2">每日任务</h2>
+                    </div>
+                    
+                    <div class="p-6 space-y-4">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                    <i class="fa fa-gamepad text-green-600"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">每日对局</h4>
+                                    <p class="text-xs text-gray-500">完成3局游戏</p>
+                                </div>
+                            </div>
+                            <span class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded-full">已完成</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <i class="fa fa-trophy text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">获胜达人</h4>
+                                    <p class="text-xs text-gray-500">获胜2局游戏</p>
+                                </div>
+                            </div>
+                            <span class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full">1/2</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                                    <i class="fa fa-users text-purple-600"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">好友开黑</h4>
+                                    <p class="text-xs text-gray-500">和好友组队1局</p>
+                                </div>
+                            </div>
+                            <span class="text-xs bg-gray-200 text-gray-500 px-2 py-1 rounded-full">未完成</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <p class="mb-2">欢乐斗地主 © 2025</p>
+                <p class="text-sm text-gray-400">经典国民棋牌游戏</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 等待DOM加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 标签页切换逻辑
+            const tabs = document.querySelectorAll('.rule-tab');
+            const contents = document.querySelectorAll('.rule-content');
+            
+            // 设置初始激活状态
+            if (tabs.length > 0) {
+                tabs[0].classList.add('active', 'border-primary', 'text-primary');
+                tabs[0].classList.remove('border-transparent', 'text-gray-500');
+                const initialTabId = tabs[0].getAttribute('data-tab');
+                document.getElementById(`${initialTabId}-tab`).classList.remove('hidden');
+                document.getElementById(`${initialTabId}-tab`).classList.add('active');
+            }
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // 移除所有激活状态
+                    tabs.forEach(t => {
+                        t.classList.remove('active', 'border-primary', 'text-primary');
+                        t.classList.add('border-transparent', 'text-gray-500');
+                    });
+                    
+                    // 添加当前激活状态
+                    tab.classList.add('active', 'border-primary', 'text-primary');
+                    tab.classList.remove('border-transparent', 'text-gray-500');
+                    
+                    // 隐藏所有内容
+                    contents.forEach(content => {
+                        content.classList.add('hidden');
+                        content.classList.remove('active');
+                    });
+                    
+                    // 显示当前内容
+                    const tabId = tab.getAttribute('data-tab');
+                    const activeContent = document.getElementById(`${tabId}-tab`);
+                    if (activeContent) {
+                        activeContent.classList.remove('hidden');
+                        activeContent.classList.add('active');
+                    }
+                });
+            });
+
+            // 房间分布图表
+            try {
+                const ctx = document.getElementById('roomChart');
+                if (ctx) {
+                    new Chart(ctx.getContext('2d'), {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['初级场', '中级场', '高级场', '竞技房', '好友房'],
+                            datasets: [{
+                                data: [45, 25, 15, 10, 5],
+                                backgroundColor: [
+                                    '#D92121',
+                                    '#FFB800',
+                                    '#2E7D32',
+                                    '#1976D2',
+                                    '#7B1FA2'
+                                ],
+                                borderWidth: 0
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        padding: 20,
+                                        usePointStyle: true
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Chart初始化失败:', error);
+            }
+        });
     </script>
 </body>
 </html>

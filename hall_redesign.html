@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>斗地主游戏大厅</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .game-hall-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 顶部导航栏 */
+        .top-nav {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .game-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+        }
+
+        .game-title i {
+            margin-right: 15px;
+            font-size: 32px;
+        }
+
+        .nav-buttons button {
+            margin-left: 15px;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 500;
+        }
+
+        /* 主要内容区域 */
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        /* 游戏介绍区域 */
+        .game-intro-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 12px;
+        }
+
+        .game-story {
+            line-height: 1.8;
+            margin-bottom: 25px;
+            color: #555;
+        }
+
+        .game-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            color: white;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(102, 126, 234, 0.4);
+        }
+
+        .feature-item i {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .feature-item h4 {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        /* 角色信息区 */
+        .character-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .characters-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .character-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 12px;
+            padding: 25px;
+            color: white;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .character-card.farmer {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .character-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .character-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .character-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .character-properties {
+            text-align: left;
+            margin-top: 15px;
+        }
+
+        .property-item {
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* 规则指引模块 */
+        .rules-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .rules-tabs {
+            display: flex;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .tab-button {
+            padding: 10px 25px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: 500;
+            color: #666;
+            cursor: pointer;
+            margin-right: 20px;
+            transition: color 0.3s ease;
+        }
+
+        .tab-button.active {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .rule-item {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .rule-item h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .rule-item p {
+            color: #666;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* 底部信息区域 */
+        .bottom-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        /* 用户信息面板 */
+        .user-info-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 36px;
+            margin: 0 auto 20px;
+        }
+
+        .user-name {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 25px;
+        }
+
+        .user-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .level-progress {
+            margin-top: 20px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: #e9ecef;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            transition: width 0.3s ease;
+        }
+
+        /* 服务器状态区 */
+        .server-status-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .online-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .online-stat-item {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            color: white;
+        }
+
+        .online-stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .online-stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .room-distribution {
+            margin-top: 25px;
+        }
+
+        .room-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .room-item:hover {
+            background: #e9ecef;
+        }
+
+        .room-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .room-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            margin-right: 15px;
+        }
+
+        .room-details h4 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .room-details p {
+            font-size: 12px;
+            color: #666;
+            margin: 0;
+        }
+
+        .room-players {
+            display: flex;
+            align-items: center;
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        .room-players i {
+            margin-right: 8px;
+        }
+
+        /* 游戏操作按钮 */
+        .game-actions {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .action-button {
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 30px;
+            margin: 0 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .action-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .bottom-info {
+                grid-template-columns: 1fr;
+            }
+
+            .characters-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .game-hall-container {
+                padding: 10px;
+            }
+
+            .top-nav {
+                flex-direction: column;
+                padding: 20px;
+            }
+
+            .game-title {
+                margin-bottom: 20px;
+                font-size: 24px;
+            }
+
+            .nav-buttons button {
+                margin: 5px;
+            }
+
+            .game-features {
+                grid-template-columns: 1fr;
+            }
+
+            .user-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .online-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .action-button {
+                display: block;
+                margin: 10px auto;
+            }
+        }
+
+        /* 动画效果 */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-hall-container">
+        <!-- 顶部导航栏 -->
+        <div class="top-nav">
+            <div class="game-title">
+                <i class="fas fa-crown"></i>
+                <span>斗地主游戏大厅</span>
+            </div>
+            <div class="nav-buttons">
+                <button type="button" class="btn btn-outline-primary">
+                    <i class="fas fa-cog"></i> 设置
+                </button>
+                <button type="button" class="btn btn-outline-danger">
+                    <i class="fas fa-sign-out-alt"></i> 退出
+                </button>
+            </div>
+        </div>
+
+        <!-- 主要内容区域 -->
+        <div class="main-content">
+            <!-- 游戏介绍区域 -->
+            <div class="game-intro-section">
+                <h2 class="section-title">
+                    <i class="fas fa-info-circle"></i>
+                    游戏介绍
+                </h2>
+                <div class="game-story">
+                    <p>斗地主是一款风靡全国的经典扑克牌游戏，起源于中国湖北。游戏由3个玩家进行，使用一副54张牌（包括大小王）。游戏的目标是通过策略性地出牌，先将自己手中的牌全部出完的一方获胜。</p>
+                </div>
+                <h3 style="color: #667eea; margin-bottom: 15px;">核心玩法</h3>
+                <div class="game-story">
+                    <p>游戏开始时，系统会随机选择一名玩家作为地主，地主会获得3张额外的底牌。其余两名玩家则组成农民联盟，共同对抗地主。游戏采用逆时针出牌顺序，玩家可以根据规则出牌或选择不出牌。</p>
+                </div>
+                <h3 style="color: #667eea; margin-bottom: 15px;">游戏特色</h3>
+                <div class="game-features">
+                    <div class="feature-item">
+                        <i class="fas fa-brain"></i>
+                        <h4>策略性强</h4>
+                        <p>需要精确的计算和判断</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-users"></i>
+                        <h4>多人对战</h4>
+                        <p>支持3人实时在线竞技</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-trophy"></i>
+                        <h4>丰富奖励</h4>
+                        <p>完成任务赢取丰厚奖励</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-bolt"></i>
+                        <h4>快速匹配</h4>
+                        <p>秒速匹配开始游戏</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 角色信息区 -->
+            <div class="character-section">
+                <h2 class="section-title">
+                    <i class="fas fa-user-tag"></i>
+                    游戏角色
+                </h2>
+                <div class="characters-container">
+                    <div class="character-card">
+                        <div class="character-icon">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        <h3 class="character-name">地主</h3>
+                        <div class="character-properties">
+                            <div class="property-item">
+                                <span>初始牌数：</span>
+                                <span><strong>20张</strong></span>
+                            </div>
+                            <div class="property-item">
+                                <span>团队人数：</span>
+                                <span><strong>1人</strong></span>
+                            </div>
+                            <div class="property-item">
+                                <span>获胜条件：</span>
+                                <span><strong>先出完牌</strong></span>
+                            </div>
+                            <div class="property-item">
+                                <span>倍数奖励：</span>
+                                <span><strong>较高</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="character-card farmer">
+                        <div class="character-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 class="character-name">农民</h3>
+                        <div class="character-properties">
+                            <div class="property-item">
+                                <span>初始牌数：</span>
+                                <span><strong>17张</strong></span>
+                            </div>
+                            <div class="property-item">
+                                <span>团队人数：</span>
+                                <span><strong>2人</strong></span>
+                            </div>
+                            <div class="property-item">
+                                <span>获胜条件：</span>
+                                <span><strong>合作击败地主</strong></span>
+                            </div>
+                            <div class="property-item">
+                                <span>倍数奖励：</span>
+                                <span><strong>中等</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 规则指引模块 -->
+        <div class="rules-section">
+            <h2 class="section-title">
+                <i class="fas fa-book-open"></i>
+                游戏规则
+            </h2>
+            <div class="rules-tabs">
+                <button class="tab-button active" onclick="switchTab('basic-rules')">基本规则</button>
+                <button class="tab-button" onclick="switchTab('win-lose')">胜负判定</button>
+                <button class="tab-button" onclick="switchTab('advanced')">进阶技巧</button>
+            </div>
+
+            <div id="basic-rules" class="tab-content active">
+                <div class="rule-item">
+                    <h4><i class="fas fa-hand-paper"></i> 牌型介绍</h4>
+                    <p>斗地主游戏中有13种基本牌型，包括单牌、对子、三张、三带一、三带二、顺子、连对、飞机、飞机带翅膀、炸弹、王炸等。每种牌型都有特定的大小比较规则。</p>
+                </div>
+                <div class="rule-item">
+                    <h4><i class="fas fa-gavel"></i> 叫地主规则</h4>
+                    <p>游戏开始后，系统会随机选择一名玩家开始叫地主，玩家可以选择叫1分、2分、3分或不叫。如果三名玩家都不叫地主，则重新发牌。叫地主分数最高的玩家成为地主。</p>
+                </div>
+                <div class="rule-item">
+                    <h4><i class="fas fa-sync-alt"></i> 出牌规则</h4>
+                    <p>地主首先出牌，然后按逆时针顺序依次出牌。轮到玩家出牌时，玩家可以选择不出牌或出比上一家大的牌型。如果连续三家都不出牌，则由最后出牌的玩家继续出牌。</p>
+                </div>
+            </div>
+
+            <div id="win-lose" class="tab-content">
+                <div class="rule-item">
+                    <h4><i class="fas fa-trophy"></i> 获胜条件</h4>
+                    <p>地主获胜：地主先将自己手中的牌全部出完，则地主获胜，获得相应的倍数奖励。</p>
+                    <p>农民获胜：任意一名农民先将自己手中的牌全部出完，则两名农民都获胜，各自获得相应的倍数奖励。</p>
+                </div>
+                <div class="rule-item">
+                    <h4><i class="fas fa-calculator"></i> 倍数计算</h4>
+                    <p>游戏倍数由以下几个部分组成：基础倍数（根据叫地主分数确定）、炸弹倍数（每出一个炸弹或王炸，倍数翻倍）、春天倍数（地主出牌至结束，农民未出一张牌，倍数翻倍）。</p>
+                </div>
+                <div class="rule-item">
+                    <h4><i class="fas fa-coins"></i> 积分计算</h4>
+                    <p>最终积分 = 基础积分 × 总倍数。地主获胜时，地主获得2×最终积分，两名农民各损失最终积分。农民获胜时，两名农民各获得最终积分，地主损失2×最终积分。</p>
+                </div>
+            </div>
+
+            <div id="advanced" class="tab-content">
+                <div class="rule-item">
+                    <h4><i class="fas fa-lightbulb"></i> 叫地主技巧</h4>
+                    <p>叫地主时应考虑手中的牌型质量，包括是否有炸弹、王炸、大牌（2、A）等。一般来说，如果手中有两个以上的炸弹或王炸，或者有较多的大牌，可以考虑叫地主。</p>
+                </div>
+                <div class="rule-item">
+                    <h4><i class="fas fa-chess"></i> 出牌策略</h4>
+                    <p>地主出牌时应尽量先出手中的小牌，保留大牌用于控制局面。农民出牌时应尽量配合队友，帮助队友出牌，同时尽量压制地主的牌型。</p>
+                </div>
+                <div class="rule-item">
+                    <h4><i class="fas fa-eye"></i> 记牌技巧</h4>
+                    <p>记牌是斗地主游戏中非常重要的技巧，玩家应尽量记住已经出过的牌型和数量，特别是大牌（2、A、K）和炸弹的数量。这有助于玩家判断剩余牌型，制定更有效的出牌策略。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部信息区域 -->
+        <div class="bottom-info">
+            <!-- 用户信息面板 -->
+            <div class="user-info-section">
+                <h2 class="section-title">
+                    <i class="fas fa-user-circle"></i>
+                    用户信息
+                </h2>
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h3 class="user-name">玩家123456</h3>
+                <div class="user-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">45</div>
+                        <div class="stat-label">等级</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">1280</div>
+                        <div class="stat-label">经验值</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">258</div>
+                        <div class="stat-label">胜利场数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">89%</div>
+                        <div class="stat-label">胜率</div>
+                    </div>
+                </div>
+                <div class="level-progress">
+                    <div class="progress-info">
+                        <span>等级进度</span>
+                        <span>1280/2000</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 64%;"></div>
+                    </div>
+                </div>
+                <div class="level-progress" style="margin-top: 20px;">
+                    <div class="progress-info">
+                        <span>累计在线时长</span>
+                        <span>156小时</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 78%; background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 服务器状态区 -->
+            <div class="server-status-section">
+                <h2 class="section-title">
+                    <i class="fas fa-server"></i>
+                    服务器状态
+                </h2>
+                <div class="online-stats">
+                    <div class="online-stat-item pulse-animation">
+                        <div class="online-stat-value">12,589</div>
+                        <div class="online-stat-label">当前在线人数</div>
+                    </div>
+                    <div class="online-stat-item">
+                        <div class="online-stat-value">3,421</div>
+                        <div class="online-stat-label">游戏中房间数</div>
+                    </div>
+                </div>
+                <div class="room-distribution">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">房间人数分布</h3>
+                    <div class="room-item">
+                        <div class="room-info">
+                            <div class="room-icon">
+                                <i class="fas fa-door-open"></i>
+                            </div>
+                            <div class="room-details">
+                                <h4>等待中房间</h4>
+                                <p>等待其他玩家加入</p>
+                            </div>
+                        </div>
+                        <div class="room-players">
+                            <i class="fas fa-users"></i>
+                            <span>1,234 个房间</span>
+                        </div>
+                    </div>
+                    <div class="room-item">
+                        <div class="room-info">
+                            <div class="room-icon">
+                                <i class="fas fa-play"></i>
+                            </div>
+                            <div class="room-details">
+                                <h4>游戏中房间</h4>
+                                <p>正在进行游戏</p>
+                            </div>
+                        </div>
+                        <div class="room-players">
+                            <i class="fas fa-users"></i>
+                            <span>3,421 个房间</span>
+                        </div>
+                    </div>
+                    <div class="room-item">
+                        <div class="room-info">
+                            <div class="room-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="room-details">
+                                <h4>高级场房间</h4>
+                                <p>高倍数游戏房间</p>
+                            </div>
+                        </div>
+                        <div class="room-players">
+                            <i class="fas fa-users"></i>
+                            <span>567 个房间</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 游戏操作按钮 -->
+        <div class="game-actions">
+            <button type="button" class="btn btn-success action-button">
+                <i class="fas fa-play-circle"></i> 快速开始游戏
+            </button>
+            <button type="button" class="btn btn-primary action-button">
+                <i class="fas fa-plus-circle"></i> 创建房间
+            </button>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 切换规则标签
+        function switchTab(tabId) {
+            // 移除所有标签的active类
+            document.querySelectorAll('.tab-button').forEach(function(button) {
+                button.classList.remove('active');
+            });
+            // 移除所有内容的active类
+            document.querySelectorAll('.tab-content').forEach(function(content) {
+                content.classList.remove('active');
+            });
+            // 添加当前标签的active类
+            event.target.classList.add('active');
+            // 添加当前内容的active类
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // 模拟实时数据更新
+        setInterval(function() {
+            // 更新在线人数
+            var onlineCount = document.querySelector('.online-stat-value');
+            var currentCount = parseInt(onlineCount.textContent.replace(/,/g, ''));
+            var newCount = currentCount + Math.floor(Math.random() * 10) - 5;
+            newCount = Math.max(10000, newCount); // 确保人数不低于10000
+            onlineCount.textContent = newCount.toLocaleString();
+        }, 5000);
+
+        // 游戏操作按钮点击事件
+        document.querySelectorAll('.action-button').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var buttonText = this.textContent.trim();
+                alert(buttonText + '功能将在后续版本中实现！');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件预览中心</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#6B7280',
+                        neutral: '#F3F4F6',
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .preview-container {
+                @apply relative w-full h-full bg-white overflow-hidden;
+            }
+            .toolbar-btn {
+                @apply flex items-center justify-center w-10 h-10 rounded-lg bg-white hover:bg-neutral transition-all duration-200 shadow-md hover:shadow-lg active:scale-95;
+            }
+            .nav-btn {
+                @apply flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-neutral transition-all duration-200;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-inter">
+    <!-- 顶部导航栏 -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <!-- 返回按钮和标题 -->
+                <div class="flex items-center gap-4">
+                    <button class="nav-btn" onclick="goBack()">
+                        <i class="fa fa-arrow-left text-primary"></i>
+                        <span class="text-gray-700">返回</span>
+                    </button>
+                    <h1 class="text-xl font-semibold text-gray-800">文件预览</h1>
+                </div>
+                
+                <!-- 文件信息 -->
+                <div class="flex items-center gap-6">
+                    <span class="text-sm text-secondary">
+                        <i class="fa fa-file-o mr-1"></i>
+                        demo.pdf
+                    </span>
+                    <span class="text-sm text-secondary">
+                        <i class="fa fa-clock-o mr-1"></i>
+                        2025-12-01
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-6">
+        <div class="flex flex-col gap-6">
+            <!-- 操作工具栏 -->
+            <div class="flex items-center justify-between bg-white rounded-xl shadow-sm p-4">
+                <div class="flex items-center gap-3">
+                    <button class="toolbar-btn" onclick="zoomOut()" title="缩小">
+                        <i class="fa fa-search-minus text-gray-700"></i>
+                    </button>
+                    <span class="text-sm text-secondary w-16 text-center" id="zoomLevel">100%</span>
+                    <button class="toolbar-btn" onclick="zoomIn()" title="放大">
+                        <i class="fa fa-search-plus text-gray-700"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="resetZoom()" title="重置缩放">
+                        <i class="fa fa-refresh text-gray-700"></i>
+                    </button>
+                    <div class="h-8 w-px bg-gray-200"></div>
+                    <button class="toolbar-btn" onclick="prevPage()" title="上一页">
+                        <i class="fa fa-chevron-left text-gray-700"></i>
+                    </button>
+                    <span class="text-sm text-secondary w-20 text-center" id="pageInfo">1 / 10</span>
+                    <button class="toolbar-btn" onclick="nextPage()" title="下一页">
+                        <i class="fa fa-chevron-right text-gray-700"></i>
+                    </button>
+                </div>
+                
+                <div class="flex items-center gap-3">
+                    <button class="toolbar-btn" onclick="toggleFitMode()" title="适应模式">
+                        <i class="fa fa-expand text-gray-700"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="toggleFullscreen()" title="全屏">
+                        <i class="fa fa-arrows-alt text-gray-700"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="downloadFile()" title="下载">
+                        <i class="fa fa-download text-primary"></i>
+                    </button>
+                    <button class="toolbar-btn" onclick="printFile()" title="打印">
+                        <i class="fa fa-print text-gray-700"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 主要内容预览区 -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <div class="preview-container" id="previewContainer">
+                    <img src="https://picsum.photos/1200/800" alt="预览内容" class="max-w-full max-h-[70vh] mx-auto my-auto" id="previewContent">
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let zoomLevel = 100;
+        let currentPage = 1;
+        let totalPages = 10;
+        let fitMode = 'contain';
+
+        // 返回按钮
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                // 模拟返回效果
+                const container = document.getElementById('previewContainer');
+                container.style.opacity = '0.5';
+                setTimeout(() => {
+                    container.style.opacity = '1';
+                }, 500);
+            }
+        }
+
+        // 缩放控制
+        function zoomIn() {
+            if (zoomLevel < 200) {
+                zoomLevel += 10;
+                updateZoom();
+            }
+        }
+
+        function zoomOut() {
+            if (zoomLevel > 50) {
+                zoomLevel -= 10;
+                updateZoom();
+            }
+        }
+
+        function resetZoom() {
+            zoomLevel = 100;
+            updateZoom();
+        }
+
+        function updateZoom() {
+            document.getElementById('zoomLevel').textContent = `${zoomLevel}%`;
+            const previewContent = document.getElementById('previewContent');
+            previewContent.style.transformOrigin = 'center center';
+            previewContent.style.transform = `scale(${zoomLevel / 100})`;
+        }
+
+        // 页面切换
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                updatePageInfo();
+            }
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                updatePageInfo();
+            }
+        }
+
+        function updatePageInfo() {
+            document.getElementById('pageInfo').textContent = `${currentPage} / ${totalPages}`;
+        }
+
+        // 适应模式切换
+        function toggleFitMode() {
+            const previewContainer = document.getElementById('previewContainer');
+            const previewContent = document.getElementById('previewContent');
+            
+            if (fitMode === 'contain') {
+                fitMode = 'cover';
+                previewContent.style.objectFit = 'cover';
+            } else {
+                fitMode = 'contain';
+                previewContent.style.objectFit = 'contain';
+            }
+        }
+
+        // 全屏切换（兼容多浏览器）
+        function toggleFullscreen() {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) {
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.documentElement.webkitRequestFullscreen) {
+                    document.documentElement.webkitRequestFullscreen();
+                } else if (document.documentElement.mozRequestFullScreen) {
+                    document.documentElement.mozRequestFullScreen();
+                } else if (document.documentElement.msRequestFullscreen) {
+                    document.documentElement.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        }
+
+        // 下载文件
+        function downloadFile() {
+            alert('开始下载文件');
+        }
+
+        // 打印文件
+        function printFile() {
+            window.print();
+        }
+
+        // 监听全屏变化（兼容多浏览器）
+        function handleFullscreenChange() {
+            const fullscreenBtn = document.querySelector('button[onclick="toggleFullscreen()"] i');
+            const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+            if (isFullscreen) {
+                fullscreenBtn.classList.remove('fa-arrows-alt');
+                fullscreenBtn.classList.add('fa-compress');
+            } else {
+                fullscreenBtn.classList.remove('fa-compress');
+                fullscreenBtn.classList.add('fa-arrows-alt');
+            }
+        }
+
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+        document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+        document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+    </script>
+</body>
+</html>

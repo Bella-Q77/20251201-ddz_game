@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>斗地主游戏大厅</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 容器 */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 页面标题 */
+        .page-title {
+            text-align: center;
+            color: white;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 网格布局 */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* 卡片样式 */
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .card-header h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .card-header i {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        /* 游戏介绍区域 */
+        .game-intro {
+            grid-column: 1 / -1;
+        }
+
+        .intro-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .intro-text h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .intro-text p {
+            line-height: 1.8;
+            margin-bottom: 15px;
+            color: #666;
+        }
+
+        .intro-features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .feature-item i {
+            font-size: 28px;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .feature-item p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .intro-image {
+            text-align: center;
+        }
+
+        .intro-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 角色信息区 */
+        .role-info {
+            grid-column: 1 / -1;
+        }
+
+        .roles-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        .role-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .role-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .role-header {
+            padding: 20px;
+            text-align: center;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .landlord-header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .farmer-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .role-header h3 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .role-header i {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .role-body {
+            padding: 25px;
+        }
+
+        .role-attributes {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .attribute-item {
+            text-align: center;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .attribute-item .label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .attribute-item .value {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .role-description {
+            line-height: 1.8;
+            color: #666;
+        }
+
+        /* 规则指引模块 */
+        .rules-guide {
+            grid-column: 1 / -1;
+        }
+
+        .rules-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 15px 30px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .tab-btn:hover {
+            color: #667eea;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .rule-section {
+            margin-bottom: 25px;
+        }
+
+        .rule-section h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .rule-section p {
+            line-height: 1.8;
+            margin-bottom: 15px;
+            color: #666;
+        }
+
+        .rule-list {
+            list-style: none;
+            margin-bottom: 15px;
+        }
+
+        .rule-list li {
+            padding: 10px 0 10px 30px;
+            position: relative;
+            line-height: 1.6;
+            color: #666;
+        }
+
+        .rule-list li::before {
+            content: '\25B8';
+            position: absolute;
+            left: 10px;
+            color: #667eea;
+        }
+
+        /* 用户信息面板 */
+        .user-info {
+            grid-column: 1 / 2;
+        }
+
+        .user-avatar {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .user-avatar img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid #667eea;
+            object-fit: cover;
+        }
+
+        .user-details {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .user-details h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .user-level {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .level-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .level-progress {
+            margin-bottom: 20px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .progress-header span {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
+        .user-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .stat-item i {
+            font-size: 24px;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-item .value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .stat-item .label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* 服务器状态区 */
+        .server-status {
+            grid-column: 2 / -1;
+        }
+
+        .status-overview {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .status-item {
+            text-align: center;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .status-item i {
+            font-size: 32px;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .status-item .value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .status-item .label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .room-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .room-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .room-item:hover {
+            background-color: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .room-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .room-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .room-name {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .room-players {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .player-count {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .player-bar {
+            width: 60px;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .player-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .page-title {
+                font-size: 28px;
+                margin-bottom: 20px;
+            }
+
+            .intro-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .intro-features {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .roles-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .rules-tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab-btn {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+
+            .user-info,
+            .server-status {
+                grid-column: 1 / -1;
+            }
+
+            .status-overview {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 24px;
+            }
+
+            .intro-features {
+                grid-template-columns: 1fr;
+            }
+
+            .status-overview {
+                grid-template-columns: 1fr;
+            }
+
+            .user-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="page-title">斗地主游戏大厅</h1>
+
+        <div class="grid-container">
+            <!-- 游戏介绍区域 -->
+            <div class="card game-intro">
+                <div class="card-header">
+                    <i class="fas fa-gamepad"></i>
+                    <h2>游戏介绍</h2>
+                </div>
+                <div class="card-body">
+                    <div class="intro-content">
+                        <div class="intro-text">
+                            <h3>背景故事</h3>
+                            <p>斗地主是一款起源于中国的纸牌游戏，流行于全国各地。游戏由三人进行，使用一副54张牌（包括大小王）。</p>
+                            <p>游戏的目标是通过策略性地出牌，先出完所有牌的一方获胜。斗地主游戏不仅考验玩家的牌技，还需要良好的团队合作和心理战术。</p>
+
+                            <h3>核心玩法</h3>
+                            <p>游戏分为三个角色：地主和两个农民。地主拥有20张牌，农民各拥有17张牌。地主先出牌，然后按逆时针顺序依次出牌。</p>
+                            <p>玩家可以出单张、对子、三张、三带一、三带二、顺子、连对、飞机等牌型。出牌时必须出比上家大的牌型，或者选择不出牌。</p>
+
+                            <div class="intro-features">
+                                <div class="feature-item">
+                                    <i class="fas fa-brain"></i>
+                                    <p>策略思考</p>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-users"></i>
+                                    <p>团队合作</p>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-trophy"></i>
+                                    <p>竞技乐趣</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="intro-image">
+                            <img src="https://via.placeholder.com/600x400/667eea/ffffff?text=斗地主游戏" alt="斗地主游戏">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 角色信息区 -->
+            <div class="card role-info">
+                <div class="card-header">
+                    <i class="fas fa-user-tag"></i>
+                    <h2>角色信息</h2>
+                </div>
+                <div class="card-body">
+                    <div class="roles-container">
+                        <div class="role-card">
+                            <div class="role-header landlord-header">
+                                <i class="fas fa-crown"></i>
+                                <h3>地主</h3>
+                            </div>
+                            <div class="role-body">
+                                <div class="role-attributes">
+                                    <div class="attribute-item">
+                                        <div class="label">牌数</div>
+                                        <div class="value">20</div>
+                                    </div>
+                                    <div class="attribute-item">
+                                        <div class="label">倍数</div>
+                                        <div class="value">2x</div>
+                                    </div>
+                                    <div class="attribute-item">
+                                        <div class="label">优势</div>
+                                        <div class="value">先出牌</div>
+                                    </div>
+                                    <div class="attribute-item">
+                                        <div class="label">挑战</div>
+                                        <div class="value">1v2</div>
+                                    </div>
+                                </div>
+                                <div class="role-description">
+                                    <p>地主是游戏中的核心角色，拥有最多的牌数和先出牌的优势。但同时也面临着两个农民的联合挑战，需要具备出色的牌技和策略思维。</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="role-card">
+                            <div class="role-header farmer-header">
+                                <i class="fas fa-user-friends"></i>
+                                <h3>农民</h3>
+                            </div>
+                            <div class="role-body">
+                                <div class="role-attributes">
+                                    <div class="attribute-item">
+                                        <div class="label">牌数</div>
+                                        <div class="value">17</div>
+                                    </div>
+                                    <div class="attribute-item">
+                                        <div class="label">倍数</div>
+                                        <div class="value">1x</div>
+                                    </div>
+                                    <div class="attribute-item">
+                                        <div class="label">优势</div>
+                                        <div class="value">团队合作</div>
+                                    </div>
+                                    <div class="attribute-item">
+                                        <div class="label">挑战</div>
+                                        <div class="value">后出牌</div>
+                                    </div>
+                                </div>
+                                <div class="role-description">
+                                    <p>农民是游戏中的团队角色，需要与另一位农民密切合作，共同对抗地主。虽然农民的牌数较少且后出牌，但通过良好的团队配合和策略，可以有效地限制地主的出牌。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 规则指引模块 -->
+            <div class="card rules-guide">
+                <div class="card-header">
+                    <i class="fas fa-book"></i>
+                    <h2>规则指引</h2>
+                </div>
+                <div class="card-body">
+                    <div class="rules-tabs">
+                        <button class="tab-btn active" onclick="switchTab('basic-rules', this)">基本规则</button>
+                        <button class="tab-btn" onclick="switchTab('win-lose', this)">胜负判定</button>
+                        <button class="tab-btn" onclick="switchTab('advanced-skills', this)">进阶技巧</button>
+                    </div>
+
+                    <!-- 基本规则 -->
+                    <div id="basic-rules" class="tab-content active">
+                        <div class="rule-section">
+                            <h4>牌型介绍</h4>
+                            <ul class="rule-list">
+                                <li><strong>单张：</strong>任意一张牌，如3、A、小王等。</li>
+                                <li><strong>对子：</strong>两张相同点数的牌，如33、AA等。</li>
+                                <li><strong>三张：</strong>三张相同点数的牌，如333、AAA等。</li>
+                                <li><strong>三带一：</strong>三张相同点数的牌 + 一张单张牌，如333+4、AAA+K等。</li>
+                                <li><strong>三带二：</strong>三张相同点数的牌 + 一对牌，如333+44、AAA+KK等。</li>
+                                <li><strong>顺子：</strong>五张或更多连续点数的牌，如34567、10JQKA等。</li>
+                                <li><strong>连对：</strong>三对或更多连续点数的对子，如334455、1010JJQQ等。</li>
+                                <li><strong>飞机：</strong>两个或更多连续点数的三张牌，如333444、AAAKKK等。</li>
+                                <li><strong>炸弹：</strong>四张相同点数的牌，如4444、AAAA等。炸弹可以炸任意牌型。</li>
+                                <li><strong>王炸：</strong>小王 + 大王，是最大的牌型，可以炸任意牌型。</li>
+                            </ul>
+                        </div>
+
+                        <div class="rule-section">
+                            <h4>出牌规则</h4>
+                            <ul class="rule-list">
+                                <li>地主先出牌，然后按逆时针顺序依次出牌。</li>
+                                <li>玩家可以选择出比上家大的牌型，或者选择不出牌。</li>
+                                <li>如果玩家选择不出牌，下一位玩家可以继续出牌。</li>
+                                <li>当所有玩家都选择不出牌时，最后出牌的玩家可以重新出任意牌型。</li>
+                                <li>炸弹和王炸可以在任意时候出牌，不受上家牌型的限制。</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 胜负判定 -->
+                    <div id="win-lose" class="tab-content">
+                        <div class="rule-section">
+                            <h4>胜负条件</h4>
+                            <ul class="rule-list">
+                                <li><strong>地主获胜：</strong>地主先出完所有牌。</li>
+                                <li><strong>农民获胜：</strong>任意一位农民先出完所有牌，或者地主最后出完牌。</li>
+                            </ul>
+                        </div>
+
+                        <div class="rule-section">
+                            <h4>计分规则</h4>
+                            <ul class="rule-list">
+                                <li>游戏基础分为1分。</li>
+                                <li>地主获胜：地主得2分，农民各扣1分。</li>
+                                <li>农民获胜：每位农民得1分，地主扣2分。</li>
+                                <li>炸弹计分：每出一个炸弹，游戏分数翻倍。</li>
+                                <li>王炸计分：出王炸，游戏分数翻倍。</li>
+                                <li>春天计分：地主先出完所有牌，且农民没有出任何牌，游戏分数翻倍。</li>
+                                <li>反春天计分：农民先出完所有牌，且地主没有出任何牌，游戏分数翻倍。</li>
+                            </ul>
+                        </div>
+
+                        <div class="rule-section">
+                            <h4>等级规则</h4>
+                            <ul class="rule-list">
+                                <li>玩家初始等级为1级，需要积累经验值升级。</li>
+                                <li>每局游戏获胜可以获得经验值，失败则扣除经验值。</li>
+                                <li>等级越高，需要的经验值越多。</li>
+                                <li>等级提升可以解锁新的游戏功能和奖励。</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 进阶技巧 -->
+                    <div id="advanced-skills" class="tab-content">
+                        <div class="rule-section">
+                            <h4>地主技巧</h4>
+                            <ul class="rule-list">
+                                <li><strong>牌型分析：</strong>拿到牌后，先分析自己的牌型，确定主打的牌型和策略。</li>
+                                <li><strong>先出小牌：</strong>地主先出牌时，通常先出小牌，试探农民的牌型和实力。</li>
+                                <li><strong>控制节奏：</strong>地主需要控制游戏的节奏，尽量让自己的牌型发挥最大的优势。</li>
+                                <li><strong>炸弹使用：</strong>炸弹是地主的重要武器，需要在关键时刻使用，以确保自己的胜利。</li>
+                                <li><strong>心理战术：</strong>地主可以通过出牌的方式和节奏，干扰农民的判断和决策。</li>
+                            </ul>
+                        </div>
+
+                        <div class="rule-section">
+                            <h4>农民技巧</h4>
+                            <ul class="rule-list">
+                                <li><strong>团队合作：</strong>农民需要与另一位农民密切合作，共同对抗地主。</li>
+                                <li><strong>传递信息：</strong>农民可以通过出牌的方式，向队友传递自己的牌型和实力信息。</li>
+                                <li><strong>限制地主：</strong>农民需要尽量限制地主的出牌，不让地主轻易出完所有牌。</li>
+                                <li><strong>炸弹使用：</strong>农民的炸弹需要在关键时刻使用，以破坏地主的出牌计划。</li>
+                                <li><strong>配合队友：</strong>农民需要配合队友的出牌，尽量让队友先出完所有牌。</li>
+                            </ul>
+                        </div>
+
+                        <div class="rule-section">
+                            <h4>通用技巧</h4>
+                            <ul class="rule-list">
+                                <li><strong>记牌：</strong>记牌是斗地主游戏的重要技巧，需要记住已经出过的牌，以及还剩下的牌。</li>
+                                <li><strong>算牌：</strong>算牌是在记牌的基础上，计算出其他玩家可能拥有的牌型和实力。</li>
+                                <li><strong>灵活应变：</strong>斗地主游戏是一个动态的过程，需要根据其他玩家的出牌情况，灵活调整自己的策略。</li>
+                                <li><strong>保持冷静：</strong>斗地主游戏需要保持冷静的头脑，不要因为一时的得失而影响自己的判断和决策。</li>
+                                <li><strong>积累经验：</strong>斗地主游戏需要不断地积累经验，通过实践提高自己的牌技和策略水平。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 用户信息面板 -->
+            <div class="card user-info">
+                <div class="card-header">
+                    <i class="fas fa-user"></i>
+                    <h2>用户信息</h2>
+                </div>
+                <div class="card-body">
+                    <div class="user-avatar">
+                        <img src="https://via.placeholder.com/120x120/667eea/ffffff?text=用户头像" alt="用户头像">
+                    </div>
+                    <div class="user-details">
+                        <h3>玩家昵称</h3>
+                        <div class="user-level">
+                            <span class="level-badge">Lv. 15</span>
+                            <i class="fas fa-star" style="color: #ffd700;"></i>
+                            <i class="fas fa-star" style="color: #ffd700;"></i>
+                            <i class="fas fa-star" style="color: #ffd700;"></i>
+                            <i class="fas fa-star" style="color: #ffd700;"></i>
+                            <i class="fas fa-star-half-alt" style="color: #ffd700;"></i>
+                        </div>
+                    </div>
+                    <div class="level-progress">
+                        <div class="progress-header">
+                            <span>经验值</span>
+                            <span>750 / 1000</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 75%;"></div>
+                        </div>
+                    </div>
+                    <div class="user-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-trophy"></i>
+                            <div class="value">128</div>
+                            <div class="label">获胜局数</div>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-gamepad"></i>
+                            <div class="value">256</div>
+                            <div class="label">总游戏局数</div>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-clock"></i>
+                            <div class="value">156</div>
+                            <div class="label">在线时长(小时)</div>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-percentage"></i>
+                            <div class="value">50%</div>
+                            <div class="label">胜率</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 服务器状态区 -->
+            <div class="card server-status">
+                <div class="card-header">
+                    <i class="fas fa-server"></i>
+                    <h2>服务器状态</h2>
+                </div>
+                <div class="card-body">
+                    <div class="status-overview">
+                        <div class="status-item">
+                            <i class="fas fa-users"></i>
+                            <div class="value">1,256</div>
+                            <div class="label">在线人数</div>
+                        </div>
+                        <div class="status-item">
+                            <i class="fas fa-door-open"></i>
+                            <div class="value">342</div>
+                            <div class="label">活跃房间</div>
+                        </div>
+                        <div class="status-item">
+                            <i class="fas fa-play-circle"></i>
+                            <div class="value">289</div>
+                            <div class="label">正在游戏</div>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-bottom: 15px; color: #667eea;">房间列表</h3>
+                    <div class="room-list">
+                        <!-- 房间1 -->
+                        <div class="room-item">
+                            <div class="room-info">
+                                <span class="room-number">#1001</span>
+                                <span class="room-name">初级场 - 房间1</span>
+                            </div>
+                            <div class="room-players">
+                                <span class="player-count">2 / 3</span>
+                                <div class="player-bar">
+                                    <div class="player-fill" style="width: 66.67%;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 房间2 -->
+                        <div class="room-item">
+                            <div class="room-info">
+                                <span class="room-number">#1002</span>
+                                <span class="room-name">初级场 - 房间2</span>
+                            </div>
+                            <div class="room-players">
+                                <span class="player-count">3 / 3</span>
+                                <div class="player-bar">
+                                    <div class="player-fill" style="width: 100%;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 房间3 -->
+                        <div class="room-item">
+                            <div class="room-info">
+                                <span class="room-number">#1003</span>
+                                <span class="room-name">初级场 - 房间3</span>
+                            </div>
+                            <div class="room-players">
+                                <span class="player-count">1 / 3</span>
+                                <div class="player-bar">
+                                    <div class="player-fill" style="width: 33.33%;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 房间4 -->
+                        <div class="room-item">
+                            <div class="room-info">
+                                <span class="room-number">#2001</span>
+                                <span class="room-name">中级场 - 房间1</span>
+                            </div>
+                            <div class="room-players">
+                                <span class="player-count">2 / 3</span>
+                                <div class="player-bar">
+                                    <div class="player-fill" style="width: 66.67%;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 房间5 -->
+                        <div class="room-item">
+                            <div class="room-info">
+                                <span class="room-number">#2002</span>
+                                <span class="room-name">中级场 - 房间2</span>
+                            </div>
+                            <div class="room-players">
+                                <span class="player-count">3 / 3</span>
+                                <div class="player-bar">
+                                    <div class="player-fill" style="width: 100%;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 房间6 -->
+                        <div class="room-item">
+                            <div class="room-info">
+                                <span class="room-number">#3001</span>
+                                <span class="room-name">高级场 - 房间1</span>
+                            </div>
+                            <div class="room-players">
+                                <span class="player-count">1 / 3</span>
+                                <div class="player-bar">
+                                    <div class="player-fill" style="width: 33.33%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 切换规则标签
+        function switchTab(tabId, btn) {
+            // 隐藏所有标签内容
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // 移除所有标签按钮的活跃状态
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            tabBtns.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // 显示选中的标签内容
+            document.getElementById(tabId).classList.add('active');
+
+            // 激活选中的标签按钮
+            btn.classList.add('active');
+        }
+
+        // 模拟实时更新服务器状态
+        function updateServerStatus() {
+            // 随机更新在线人数
+            const onlineCount = document.querySelector('.status-item:nth-child(1) .value');
+            const currentOnline = parseInt(onlineCount.textContent.replace(/,/g, ''));
+            const newOnline = currentOnline + Math.floor(Math.random() * 20) - 10;
+            onlineCount.textContent = newOnline.toLocaleString();
+
+            // 随机更新活跃房间数
+            const roomCount = document.querySelector('.status-item:nth-child(2) .value');
+            const currentRooms = parseInt(roomCount.textContent.replace(/,/g, ''));
+            const newRooms = currentRooms + Math.floor(Math.random() * 10) - 5;
+            roomCount.textContent = newRooms.toLocaleString();
+
+            // 随机更新正在游戏局数
+            const gameCount = document.querySelector('.status-item:nth-child(3) .value');
+            const currentGames = parseInt(gameCount.textContent.replace(/,/g, ''));
+            const newGames = currentGames + Math.floor(Math.random() * 10) - 5;
+            gameCount.textContent = newGames.toLocaleString();
+
+            // 随机更新房间玩家数
+            const roomItems = document.querySelectorAll('.room-item');
+            roomItems.forEach(item => {
+                const playerCount = item.querySelector('.player-count');
+                const currentPlayers = parseInt(playerCount.textContent.split(' / ')[0]);
+                const maxPlayers = parseInt(playerCount.textContent.split(' / ')[1]);
+
+                // 随机增加或减少1名玩家，但不超过最大玩家数，也不小于0
+                let newPlayers = currentPlayers + Math.floor(Math.random() * 3) - 1;
+                newPlayers = Math.max(0, Math.min(newPlayers, maxPlayers));
+
+                // 更新玩家数显示
+                playerCount.textContent = newPlayers + ' / ' + maxPlayers;
+
+                // 更新玩家进度条
+                const playerFill = item.querySelector('.player-fill');
+                const progress = (newPlayers / maxPlayers) * 100;
+                playerFill.style.width = progress + '%';
+            });
+        }
+
+        // 每5秒更新一次服务器状态
+        setInterval(updateServerStatus, 5000);
+    </script>
+</body>
+</html>
